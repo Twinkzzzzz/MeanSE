@@ -1,0 +1,27 @@
+model_name: ncsnpp
+
+model_config:
+  flow_type: normal
+  image_size: 512
+  conditional: True
+
+ode_config:
+  sigma_min: 0
+  sigma_max: 0.5
+
+encoder_config:
+  n_fft: 1022
+  hop_length: 320
+  default_fs: 16000
+  use_builtin_complex: True
+  spec_transform_type: 'exponent'
+  spec_abs_exponent: 0.667
+  spec_factor: 0.065
+
+decoder_config:
+  n_fft: 1022
+  hop_length: 320
+  default_fs: 16000
+  spec_transform_type: 'exponent'
+  spec_abs_exponent: 0.667
+  spec_factor: 0.065
