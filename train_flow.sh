@@ -1,11 +1,11 @@
 python meanse/train_flow.py \
     --train_tag flow \
     --train_name ncsnpp \
-    --model_config /home/jiahe.wang/workspace/MeanSE/conf/flow/ncsnpp.yaml \
+    --model_config ./conf/flow/ncsnpp.yaml \
     --batch_size 1 \
     --num_gpu 1 \
     --learning_rate 1e-4 \
-    --train_set_path /home/jiahe.wang/workspace/DATA/data_vctk/train_noisy_16k \
-    --valid_set_path /home/jiahe.wang/workspace/DATA/data_vctk/valid_noisy_16k \
+    --train_set_path ./data/vctk/train_noisy_16k \
+    --valid_set_path ./data/vctk/valid_noisy_16k \
     --max_duration 48000 \
-    --val_check_interval 100 \
+    --val_check_interval 1000

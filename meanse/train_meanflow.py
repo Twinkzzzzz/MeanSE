@@ -41,7 +41,6 @@ def config_parser():
         init_from='none',
         use_high_pass=True,
         jvp_api='funtorch',  # 'autograd' or 'funtorch'
-        target_type='meanflow',  # 'flow' or 'meanflow'
         flow_ratio=0.5,
         max_interval=1.0,
         freeze_t_r_fuse=False,

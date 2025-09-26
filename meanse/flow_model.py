@@ -6,7 +6,7 @@ from meanse.ncsnpp import NCSNpp
 from meanse.config import Config 
 from espnet2.enh.loss.criterions.time_domain import SISNRLoss
 from torch_ema import ExponentialMovingAverage
-from odes import FLOWMATCHING
+from meanse.odes import FLOWMATCHING
 from espnet2.enh.encoder.stft_encoder import STFTEncoder
 from espnet2.enh.decoder.stft_decoder import STFTDecoder
 

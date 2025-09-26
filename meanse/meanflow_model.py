@@ -6,7 +6,7 @@ from meanse.ncsnpp import NCSNpp
 from meanse.config import Config 
 from espnet2.enh.loss.criterions.time_domain import SISNRLoss
 from torch_ema import ExponentialMovingAverage
-from odes import FLOWMATCHING
+from meanse.odes import FLOWMATCHING
 from espnet2.enh.encoder.stft_encoder import STFTEncoder
 from espnet2.enh.decoder.stft_decoder import STFTDecoder
 from functools import partial
@@ -36,7 +36,6 @@ class MeanFlowSEModel(L.LightningModule):
         print("loss_type:", cfg.loss_type, flush=True)
         print("flow_ratio:", cfg.flow_ratio, flush=True)
         print("max_interval:", getattr(cfg, "max_interval", "1.0"), flush=True)
-        print("target_type:", getattr(cfg, "target_type", "meanflow"), flush=True)
 
         model_cfg = getattr(cfg, "model_config", {})
         if isinstance(model_cfg, str):
@@ -76,8 +75,6 @@ class MeanFlowSEModel(L.LightningModule):
         self.loss_abs_exponent = cfg.loss_abs_exponent
         self.flow_ratio = cfg.flow_ratio
         self.max_interval = getattr(cfg, "max_interval", 1.0)
-        self.target_type = getattr(cfg, "target_type", "meanflow")
-        assert self.target_type in ['meanflow', 'flow'], f"unknown target_type {self.target_type}"
 
     def on_before_optimizer_step(self, optimizer: Optimizer) -> None:
         return
@@ -191,21 +188,10 @@ class MeanFlowSEModel(L.LightningModule):
         t_ = rearrange(t, "b -> b 1 1 1") # t_ = t.unsqueeze(1).unsqueeze(1).unsqueeze(1)
         r_ = rearrange(r, "b -> b 1 1 1") # r_ = r.unsqueeze(1).unsqueeze(1).unsqueeze(1)
 
-        if self.target_type == 'meanflow':
-            e, _ = self.ode.prior_sampling(x0.shape, y)
-            z = (1 - t_) * x0 + t_ * e # B, 1, F, T
-            v = e - x0
-            v_hat = v
-        else:
-            assert self.target_type == 'flow'
-            mean, std = self.ode.marginal_prob(x0, t, y)
-            z = torch.randn_like(x0)
-            sigmas = std[:, None, None, None]
-            xt = mean + sigmas * z
-            der_std = self.ode.der_std(t)
-            der_mean = self.ode.der_mean(x0, t, y)
-            v_hat = der_std * z + der_mean
-            z = xt
+        e, _ = self.ode.prior_sampling(x0.shape, y)
+        z = (1 - t_) * x0 + t_ * e # B, 1, F, T
+        v = e - x0
+        v_hat = v
 
         model_partial = partial(self.forward, y=y) # self.dnn
         
@@ -231,12 +217,6 @@ class MeanFlowSEModel(L.LightningModule):
 
         assert max_interval <= 1.0, "max_interval should be <= 1.0"
         samples = np.random.rand(batch_size, 2).astype(np.float32)
-
-        '''
-        mu, sigma = self.time_dist[-2], self.time_dist[-1]
-        normal_samples = np.random.randn(batch_size, 2).astype(np.float32) * sigma + mu
-        samples = 1 / (1 + np.exp(-normal_samples))  # Apply sigmoid
-        '''
 
         t_np = np.maximum(samples[:, 0], samples[:, 1])
         r_np = np.minimum(samples[:, 0], samples[:, 1])
