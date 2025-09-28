@@ -5,6 +5,8 @@ This is the official implementation of ["MeanSE: Efficient Generative Speech Enh
 >**Abstract:**<br>
 Speech enhancement (SE) improves degraded speech's quality, with generative models like flow matching gaining attention for their outstanding perceptual quality. However, the flow-based model requires multiple numbers of function evaluations (NFEs) to achieve stable and satisfactory performance, leading to high computational load and poor 1-NFE performance. In this paper, we propose MeanSE, an efficient generative speech enhancement model using mean flows, which models the average velocity field to achieve high-quality 1-NFE enhancement. Experimental results demonstrate that our proposed MeanSE significantly outperforms the flow matching baseline with a single NFE, exhibiting extremely better out-of-domain generalization capabilities.
 
+---
+
 ## Quick Start
 
 ```
@@ -41,3 +43,6 @@ We have provided inference bash script examples in `meanse/inference.sh`. Some k
 * `--force_model_type` defines whether the appointed checkpoint is a `flow` model or a `meanflow` model. It can be ignored since `meanse/inference.py` automatically detects the model type of the checkpoint. We provide this argument for special needs.
 
 * `--nfe` specifies the number of function evaluations in the inference stage.
+
+---
+*MeanSE is developed based on the open-source code framework provided by [Urgent 2026 Challenge](https://github.com/urgent-challenge/urgent2026_challenge_track1)*
