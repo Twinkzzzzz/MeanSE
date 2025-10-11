@@ -8,8 +8,8 @@ import os
 from collections import defaultdict
 import numpy as np
 import torchaudio
-from simulation.generate_data_param import process_one_sample as get_simu_meta
-from simulation.simulate_data_from_param import process_one_sample, save_audio, read_audio
+from meanutils.generate_data_param import process_one_sample as get_simu_meta
+from meanutils.simulate_data_from_param import process_one_sample, save_audio, read_audio
 import copy
 import random
 from torch.utils.data import BatchSampler
